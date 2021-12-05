@@ -9,11 +9,16 @@
 
   <div class="reviews">
     <div class="review" v-for="review in reviews" :key="review.id">
-      <p><span class="name">Name: {{review.customer}}</span></p>
+      <h3><span class="name">Name: {{review.customer}}</span></h3>
       <p><span class="product">{{review.product}}</span></p>
       <p><span class="rating">{{review.rating}} star rating</span></p>
       <p><span class="review">{{review.review}}</span></p>
-      <button @click="deleteReview(review)" class="deleteButton">Delete</button>
+      <button @click="deleteReview(review)" class="deleteButton">Delete Review</button>
+
+      <h3>Update Review:</h3>
+      <input v-model="newRating" placeholder="Rating (out of 5)">
+      <input v-model="newReview" placeholder="Review">
+      <button @click="editReview(review)">Update Review</button>
     </div>
   </div>
 
@@ -26,17 +31,53 @@
     <button @click="upload">Post Review</button>
   </div>
 
-  <h2>Had the product for a while? Update your review here:</h2>
+  <!--h2>Had the product for a while? Update your review here:</h2>
+
+
+
+
+
+
+  <div class="edit">
+      <div class="form">
+          <input v-model="findCustomer" placeholder="Search">
+          <div class="suggestions" v-if="suggestions.length > 0">
+              <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectItem(s)">{{s.title}}
+              </div>
+          </div>
+      </div>
+      <div class="upload" v-if="findReview">
+          <input v-model="findReview.customer">
+          <input v-model="findReview.product" placeholder="New Description">
+      </div>
+      <div class="actions" v-if="findReview">
+          <button @click="editReview(findReview)">Edit</button>
+      </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <input v-model="findCustomer" placeholder="Search Customer">
 
   <div class="reviews">
-    <div class="review" v-for="review in reviews" :key="review.id">
+    <div class="review" v-if="review.customer == findReview" :key="review.id">
       <p><span class="name">Name: {{review.customer}}</span></p>
       <p><span class="product">{{review.product}}</span></p>
-      <input v-model="findRating" placeholder="Rating (out of 5)">
-      <input v-model="findReview" placeholder="Review">
+      <input v-model="newRating" placeholder="Rating (out of 5)">
+      <input v-model="newReview" placeholder="Review">
       <button @click="editReview(review)">Post Review</button>
     </div>
-  </div>
+  </div-->
 
 </div>
 </template>
@@ -56,16 +97,32 @@ export default {
       review: "",
 
       addReview: null,
+      newRating: "",
+      newReview: "",
+
+/*
       findCustomer: "",
       findProduct: "",
       findRating: "",
-      findreview: "",
+      findReview: "",*/
     }
+  },
+  computed: {
+/*    suggestions() {
+      let reviews = this.reviews.filter(review => review.customer.toLowerCase().startsWith(this.findCustomer.toLowerCase()));
+      return reviews.sort((a, b) => a.customer > b.customer);
+    } */
   },
   created() {
     this.getReviews();
   },
   methods: {
+/*    selectReview(review) {
+      this.findCustomer = "";
+      this.findProduct = "";
+      this.findRating = "";
+      this.findReview = review;
+    },*/
     async getReviews() {
       try {
         let response = await axios.get("/api/reviews");
@@ -94,11 +151,12 @@ export default {
     async editReview(review) {
       try {
         await axios.put("/api/reviews/" + review._id, {
-          rating: this.findReview.rating,
-          review: this.findReview.review,
+          rating: this.newRating,
+          review: this.newReview,
         });
         this.findReview = null;
         this.getReviews();
+        console.log('edited');
         window.location.reload();
         return true;
       } catch (error) {

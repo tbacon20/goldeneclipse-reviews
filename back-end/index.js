@@ -60,11 +60,13 @@ app.post('/api/reviews', async (req, res) => {
 
 app.put('/api/reviews/:id', async (req, res) => {
   try {
+    console.log('made it!');
     let review = await Review.findOne({
       _id: req.params.id
     });
-    item.rating = req.body.rating;
-    item.review = req.body.review;
+    console.log('once again');
+    review.rating = req.body.rating;
+    review.review = req.body.review;
 
     await review.save();
     console.log('Edited');
@@ -88,7 +90,7 @@ app.delete('/api/reviews/:id', async (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log('Server listening on port 3000!'));
+app.listen(3000, () => console.log('Server listening on port 3000!'));
 
 
 

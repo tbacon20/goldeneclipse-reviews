@@ -60,11 +60,9 @@ app.post('/api/reviews', async (req, res) => {
 
 app.put('/api/reviews/:id', async (req, res) => {
   try {
-    console.log('made it!');
     let review = await Review.findOne({
       _id: req.params.id
     });
-    console.log('once again');
     review.rating = req.body.rating;
     review.review = req.body.review;
 
